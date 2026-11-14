@@ -1,0 +1,12 @@
+.pio/
+.venv/
+__pycache__/
+*.pyc
+build/
+captures/
+.env
+.env.*
+!.env.example
+*.zip
+.DS_Store
+Thumbs.db
