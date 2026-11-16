@@ -30,6 +30,22 @@ Do not choose a rectifier solely because it is labelled Schottky: leakage and re
 
 ## Electrical connections
 
+### Circuit reference labels
+
+| Label | Component / role |
+|---|---|
+| PZ1 | Piezoelectric element, AC source |
+| BR1 | Full-wave rectifier bridge |
+| C1 | Storage capacitor, nominal 1000 µF; measure actual capacitance |
+| R1 / R2 | 100 kΩ top/bottom voltage-divider resistors |
+| R3 | 1 kΩ series resistor at the ADC input |
+| C2 | 100 nF ADC filter capacitor |
+| SW1 | Normally-open tile switch, GPIO27 to GND |
+| SW2 | Optional load-disconnect switch |
+| VCAP | Protected storage node measured through the divider |
+
+The diagram is a wiring reference, not a PCB layout or a completed protection design. The app embeds this SVG without explanatory footnotes; component-selection and validation requirements remain in this document.
+
 ![Reference circuit diagram](circuit.svg)
 
 [Open the full-size SVG diagram](circuit.svg). Dashed blocks identify required protection designs whose components have not yet been selected or validated.

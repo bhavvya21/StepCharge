@@ -6,6 +6,25 @@ StepCharge is an engineering reference project for investigating how mechanical 
 
 **Status:** proposed prototype reference implementation, not a recovered copy of the earlier project. No physical tile performance, power yield, battery charging, or self-powered operation is claimed. See [validation status](docs/VALIDATION.md).
 
+## Start here
+
+1. Download the repository using **Code → Download ZIP**, then extract it.
+2. Open `app/StepCharge.html` in a browser. No terminal or local server is needed.
+3. Click **Export readings** to save the displayed capture as JSONL.
+
+For hardware measurements, follow the separate firmware and Python capture workflow below. The current app opens a bundled capture and does not offer a live-connect control.
+
+| Documentation | What it covers |
+|---|---|
+| [Documentation index](docs/README.md) | Reading order and project overview |
+| [App guide](docs/APP.md) | Final interface, screenshots, export and development |
+| [Telemetry format](docs/TELEMETRY.md) | Every field, unit, status and derived metric |
+| [Hardware guide](docs/HARDWARE.md) | Circuit references, components and connections |
+| [Testing](docs/TESTING.md) | Software checks and physical measurement method |
+| [Troubleshooting](docs/TROUBLESHOOTING.md) | Opening the app, exporting and capturing hardware data |
+| [Validation record](docs/VALIDATION.md) | Completed checks and outstanding verification |
+| [GitHub maintenance](docs/GITHUB_UPLOAD.md) | Rebuilding, committing and uploading changes |
+
 ## Capabilities
 
 - Classic ESP32-WROOM-32 development board firmware; Arduino IDE and PlatformIO project layouts.
@@ -13,6 +32,7 @@ StepCharge is an engineering reference project for investigating how mechanical 
 - Debounced, release-to-rearm step counting on GPIO27 using a separate mechanical switch.
 - Timestamped JSON Lines telemetry at 115200 baud; no Wi-Fi credentials or cloud account required.
 - Capacitor energy analysis, mean net storage power, and net energy per counted step.
+- Standalone browser dashboard with readings, a voltage chart, circuit view and JSONL export.
 - Serial capture, synthetic example data, automated analysis tests, and GitHub CI.
 - Hardware architecture, component selection requirements, wiring, calibration, and test procedures.
 

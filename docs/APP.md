@@ -1,5 +1,7 @@
 # StepCharge readings app
 
+Related guides: [documentation index](README.md), [telemetry fields](TELEMETRY.md), and [troubleshooting](TROUBLESHOOTING.md).
+
 Open `app/StepCharge.html` in your browser after downloading or cloning the repository. The standalone file includes its styles, JavaScript and circuit diagram. No server or installation is required. GitHub displays HTML source; download the file to run it.
 
 ## Final interface

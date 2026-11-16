@@ -2,6 +2,8 @@
 
 Prepared: 14 November 2026.
 
+Documentation reviewed: 16 November 2026. The documentation index, telemetry field reference, troubleshooting guide and circuit-label table describe the current export-only interface.
+
 ## Dashboard update — 16 November 2026
 
 - JavaScript: all 10 telemetry and standalone runtime tests passed using Node.js 24.19.0. Standalone tests use a minimal DOM stub, not a browser engine.
