@@ -30,6 +30,10 @@ Do not choose a rectifier solely because it is labelled Schottky: leakage and re
 
 ## Electrical connections
 
+![Reference circuit diagram](circuit.svg)
+
+[Open the full-size SVG diagram](circuit.svg). Dashed blocks identify required protection designs whose components have not yet been selected or validated.
+
 ```text
 Piezo AC leads --> bridge AC terminals
 bridge negative ------------------------------- common GND

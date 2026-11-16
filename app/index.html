@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>StepCharge · Measurement studio</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><a class="brand" href="./"><span class="logo">ϟ</span> StepCharge<span class="tag">LAB</span></a><span class="header-note">Small steps. Measurable energy.</span></header>
+<main>
+<div class="intro"><div><p class="eyebrow">ENERGY HARVESTING / MEASUREMENT STUDIO</p><h1>Every step tells a story.</h1><p>Explore your tile’s electrical readings, one footstep at a time.</p></div><span id="source" class="badge">Not connected</span></div>
+<section class="toolbar" aria-label="Data controls"><button id="connect" class="primary">Connect ESP32</button><button id="demo">Animate readings</button><label class="button">Import JSONL<input id="import" type="file" accept=".jsonl,.json,.txt"></label><button id="disconnect" disabled>Disconnect</button><span class="spacer"></span><button id="new">New window</button><button id="export" disabled>Export readings</button></section>
+<p id="notice" role="status">Connect via USB using desktop Chrome or Edge, or import a saved capture on any device.</p>
+<section class="metrics" aria-label="Latest readings">
+<article class="metric accent"><span>Storage voltage</span><h2 id="voltage">—</h2><small>VCAP · protected storage node</small></article>
+<article class="metric"><span>Tile activations</span><h2 id="steps">—</h2><small>Debounced mechanical switch</small></article>
+<article class="metric"><span>Stored energy</span><h2 id="energy">—</h2><small>Capacitor energy · ½CV²</small></article>
+<article class="metric"><span>Sensor status</span><h2 id="status" class="status">Waiting</h2><small id="statusHelp">No samples received</small></article>
+</section>
+<section class="middle"><article class="panel"><div class="panel-title"><div><p class="eyebrow">SIGNAL OVER TIME</p><h2>Storage voltage</h2></div><span class="legend">● VCAP / V</span></div><svg id="chart" viewBox="0 0 800 240" role="img" aria-label="Storage voltage plotted against elapsed time"></svg><p class="muted" id="chartCaption">Your latest 300 samples will appear here.</p></article>
+<article class="panel window"><p class="eyebrow">CURRENT MEASUREMENT WINDOW</p><h2>Energy in perspective</h2><dl><div><dt>Net storage change</dt><dd id="net">—</dd></div><div><dt>Mean net storage power</dt><dd id="power">—</dd></div><div><dt>Net energy / step</dt><dd id="perStep">—</dd></div><div><dt>Window duration</dt><dd id="duration">—</dd></div></dl><p id="windowNote" class="muted">Waiting for two samples.</p><p class="footnote">Signed capacitor energy change, including losses and loads. This is not gross harvested energy.</p></article></section>
+<section class="panel"><div class="panel-title"><div><p class="eyebrow">DEVICE TELEMETRY</p><h2>Behind the readings</h2></div><span id="count" class="muted">0 samples</span></div><dl class="details"><div><dt>ADC raw</dt><dd id="raw">—</dd></div><div><dt>ADC voltage</dt><dd id="adc">—</dd></div><div><dt>Capacitance</dt><dd id="cap">—</dd></div><div><dt>Device uptime</dt><dd id="uptime">—</dd></div><div><dt>Session</dt><dd id="session">—</dd></div><div><dt>Schema</dt><dd id="schema">—</dd></div></dl></section>
+<section class="panel circuit"><div class="panel-title"><div><p class="eyebrow">FROM FOOTSTEP TO READING</p><h2>The circuit, connected.</h2></div><a href="../docs/circuit.svg" target="_blank" rel="noopener">Open diagram ↗</a></div><img src="../docs/circuit.svg" alt="StepCharge reference circuit: piezo bridge, protected capacitor storage, resistor divider to GPIO34, independent switch to GPIO27, and USB-powered ESP32."></section>
+<footer>STEPCHARGE / BENCH PROTOTYPE<span>USB-powered instrumentation · No battery charging control</span></footer>
+</main><script type="module" src="app.mjs"></script></body></html>
+
+
+

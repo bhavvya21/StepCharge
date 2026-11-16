@@ -18,6 +18,32 @@ StepCharge is an engineering reference project for investigating how mechanical 
 
 ## Architecture
 
+![StepCharge circuit diagram](docs/circuit.svg)
+
+The diagram follows the proposed wiring below; dashed protection blocks require component selection and bench validation. See [hardware details](docs/HARDWARE.md).
+
+## Readings app
+
+**Quick start (no installation):** download or clone this repository and open `app/StepCharge.html` in your browser. The dashboard, circuit diagram, styles, and code are bundled into this file. The final toolbar contains only **Export readings**.
+
+For source development:
+
+Run `node app/serve.mjs` (Node.js 20+) and open **http://localhost:8080/app/**.
+
+The dashboard displays all firmware fields, a voltage chart, and signed net-energy metrics. It opens with a generated 60-second capture: **2.4 V**, **30 steps**, **2.88 mJ stored energy**, and **36 µW mean net storage power**. These are illustrative data, not measured hardware performance. Source badges and acquisition controls are hidden in the final interface; use the Python tools below for real hardware capture. See [app setup and usage](docs/APP.md).
+
+### Interface screenshots
+
+![StepCharge dashboard](docs/screenshots/dashboard.jpg)
+
+![Voltage chart and telemetry](docs/screenshots/telemetry.jpg)
+
+![Circuit view](docs/screenshots/circuit.jpg)
+
+Screenshots supplied by the project owner. They show the generated capture. The [current circuit SVG](docs/circuit.svg) is the editable diagram source.
+
+## Signal path
+
 ```text
 Mechanical tile / load spreader / travel stops
                |
@@ -42,10 +68,11 @@ The mechanical switch counts tile activations independently of piezo ringing. Th
 | `firmware/StepCharge/` | Arduino sketch and hardware/calibration configuration |
 | `platformio.ini` | Alternative PlatformIO build for `esp32dev` |
 | `tools/` | USB serial logging and offline energy analysis |
+| `app/` | Standalone readings dashboard, export, source modules and bundler |
 | `tests/` | Calculation and invalid-capture tests |
 | `examples/` | Explicitly synthetic test data, not measured performance |
 | `docs/` | Hardware, methodology, validation, references, and upload guide |
-| `.github/workflows/` | Automated Python tests and PlatformIO firmware build |
+| `.github/workflows/` | Automated JavaScript/Python tests and PlatformIO firmware build |
 
 ## Build and flash: Arduino IDE
 
@@ -113,7 +140,7 @@ The result is signed **net energy accumulated in the capacitor**. It excludes re
 
 ## Publishing
 
-Create a separate repository named **StepCharge** and follow [GITHUB_UPLOAD.md](docs/GITHUB_UPLOAD.md). This project is separate from Voice.Myndrya_Hume. No software license has been selected on your behalf; choose one before advertising reuse rights. Third-party software and components retain their own terms.
+See [GITHUB_UPLOAD.md](docs/GITHUB_UPLOAD.md) to maintain this repository. Rebuild the standalone app with `node app/build-standalone.mjs` before committing source changes. No software license has been selected; choose one before advertising reuse rights. Third-party software and components retain their own terms.
 
 ## References
 

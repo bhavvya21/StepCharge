@@ -1,30 +1,39 @@
-# Upload StepCharge from Windows
+# Maintaining StepCharge on GitHub
 
-Create an empty GitHub repository named **StepCharge** under your account. Leave README, .gitignore, and license initialization off because this folder already contains the project files.
+Repository: [bhavvya21/StepCharge](https://github.com/bhavvya21/StepCharge).
 
-Open PowerShell and run:
+## Get the source
 
-```powershell
-cd "C:\Users\user\Documents\ChatGPT\Myndrya\StepCharge"
-git init -b main
-git config user.name "Bhavvya Mehta"
-git config user.email "YOUR_GITHUB_EMAIL"
-git add .
-git status
-git commit -m "Initial StepCharge ESP32 energy harvesting project"
-git remote add origin https://github.com/bhavvya21/StepCharge.git
-git push -u origin main
+```sh
+git clone https://github.com/bhavvya21/StepCharge.git
+cd StepCharge
 ```
 
-Replace YOUR_GITHUB_EMAIL with your GitHub email or the exact private noreply address shown in GitHub email settings. Complete GitHub sign-in when prompted. If you choose another repository name, change the URL.
+Open `app/StepCharge.html` directly. See [APP.md](APP.md) for usage and data provenance.
 
-If origin already exists, inspect `git remote -v`, then set the intended destination:
+## Prepare an update
 
-```powershell
-git remote set-url origin https://github.com/bhavvya21/StepCharge.git
-git push -u origin main
+```sh
+git pull --ff-only
+node app/build-standalone.mjs
+node --test tests/telemetry.test.mjs tests/standalone.test.mjs
+python -m unittest discover -s tests -v
+git diff --check
+git status --short
 ```
 
-Refresh the repository and confirm README, firmware, docs, tools, and tests are present. The Actions tab will show the automated check result. Uploading source does not flash an ESP32 or validate the physical circuit.
+Commit app source and generated HTML together. Screenshots live in `docs/screenshots/`. Do not commit private captures, credentials, local server logs or temporary archives.
 
-For later edits, run `git add .`, create a new commit with a descriptive message, and `git push` from this same folder.
+## Commit and upload
+
+After reviewing changes and configuring your Git identity:
+
+```sh
+git add README.md app docs examples tests .github/workflows
+git commit -m "Update StepCharge dashboard and documentation"
+git push origin main
+```
+
+Authenticate through your installed Git credential manager if prompted. If direct pushes are restricted, use a feature branch and pull request. Do not force-push over others' work.
+
+Check GitHub Actions after uploading. Pushing source does not publish a hosted website, flash a device or validate hardware. Download the HTML app to run it; GitHub's source viewer does not execute it.

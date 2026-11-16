@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>StepCharge · Measurement studio</title><style>
+:root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#183b34;background:#f3f6f2;font-synthesis:none}*{box-sizing:border-box}body{margin:0}header{height:86px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dce4dd;background:#fcfdfa}.brand{font-size:24px;font-weight:750;display:flex;gap:10px;align-items:center;text-decoration:none;color:inherit}.logo{background:#244d3e;color:#d4f59a;border-radius:10px;font-size:33px;width:38px;text-align:center}.tag{font-size:10px;letter-spacing:2px;border:1px solid #ccd8cc;padding:5px;border-radius:4px}.header-note,.muted{color:#6a7b72;font-size:13px}main{max-width:1400px;margin:auto;padding:40px 5%}.intro{display:flex;align-items:center;justify-content:space-between;gap:20px}.eyebrow{font-size:10px;font-weight:750;letter-spacing:2px;color:#6a7b72;margin:0 0 14px}h1{font-size:clamp(29px,3.3vw,44px);letter-spacing:-1.6px;margin:0}p{line-height:1.6}.intro p:not(.eyebrow){color:#6a7b72}.badge{white-space:nowrap;border-radius:30px;background:#e3ebdf;padding:10px 16px;font-size:12px;font-weight:650}.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:25px}.spacer{flex:1}button,.button{font:inherit;font-size:12px;font-weight:600;border:1px solid #cdd8cd;background:#fcfdfa;border-radius:8px;padding:12px 16px;cursor:pointer;display:inline-block}button:hover,.button:hover{background:#e4eddc}button:disabled{opacity:.45;cursor:default}.primary{background:#244d3e;color:white;border-color:#244d3e}.primary:hover{background:#36634f}:focus-visible{outline:3px solid #58812d;outline-offset:3px}.button:focus-within{outline:3px solid #58812d}input[type=file]{position:absolute;width:1px;height:1px;opacity:0}#notice{font-size:12px;min-height:20px;margin:15px 0 25px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.metric,.panel{border:1px solid #dce4d9;background:#fcfdfa;border-radius:14px}.metric{padding:24px}.metric>span{font-size:13px}.metric h2{font-size:35px;font-weight:550;letter-spacing:-1px;margin:23px 0 14px}.metric h2.status{font-size:22px;letter-spacing:-.5px;min-height:42px;display:flex;align-items:center}.metric small{color:#768578;font-size:11px}.metric.accent{background:#e0edcf;border-color:#d1e2bf}.middle{display:grid;grid-template-columns:1.65fr 1fr;gap:18px;margin:20px 0}.panel{padding:26px;margin-bottom:20px}.middle .panel{margin:0}.panel h2{font-size:20px;font-weight:600;margin:0}.panel-title{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:24px}.legend{font-size:11px;color:#52803d}#chart{width:100%;height:auto;display:block;margin-top:25px}dl{margin:24px 0 0}dl>div{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid #e7ece3;gap:12px}dt{font-size:12px;color:#6a7b72}dd{font-size:14px;margin:0;font-weight:650}.footnote{font-size:11px;color:#768578;line-height:1.7}.details{display:grid;grid-template-columns:repeat(6,1fr);gap:20px}.details>div{display:block;border:0;padding:0}.details dd{margin-top:12px}.circuit img{width:100%;display:block}a{color:#386339}footer{font-size:10px;letter-spacing:1px;color:#768578;display:flex;justify-content:space-between;padding:12px 0 25px} @media(max-width:950px){.metrics{grid-template-columns:repeat(2,1fr)}.middle{grid-template-columns:1fr}.details{grid-template-columns:repeat(3,1fr)}}@media(max-width:580px){header{height:70px}.header-note{display:none}main{padding:28px 5%}.intro{align-items:flex-start;flex-direction:column}.metrics{gap:10px}.metric{padding:18px 14px}.metric h2{font-size:28px}.metric h2.status{font-size:18px}.panel{padding:19px}.details{grid-template-columns:repeat(2,1fr)}.panel-title{align-items:flex-start}.legend{white-space:nowrap}footer{flex-direction:column;gap:12px}.spacer{display:none}.toolbar button,.button{flex-grow:1;text-align:center}}
+
+/* Keep the readings toolbar focused on exporting the current capture. */
+.toolbar > :not(#export) { display: none; }
+</style></head>
+<body>
+<header><a class="brand" href="#"><span class="logo">ϟ</span> StepCharge<span class="tag">LAB</span></a><span class="header-note">Small steps. Measurable energy.</span></header>
+<main>
+<div class="intro"><div><p class="eyebrow">ENERGY HARVESTING / MEASUREMENT STUDIO</p><h1>Every step tells a story.</h1><p>Explore your tile’s electrical readings, one footstep at a time.</p></div><span id="source" class="badge">Not connected</span></div>
+<section class="toolbar" aria-label="Data controls"><button id="connect" class="primary">Connect ESP32</button><button id="demo">Animate readings</button><label class="button">Import JSONL<input id="import" type="file" accept=".jsonl,.json,.txt"></label><button id="disconnect" disabled>Disconnect</button><span class="spacer"></span><button id="new">New window</button><button id="export" disabled>Export readings</button></section>
+<p id="notice" role="status">Ready to use — select Try demo or Import JSONL. Live USB requires a browser with Web Serial support.</p>
+<section class="metrics" aria-label="Latest readings">
+<article class="metric accent"><span>Storage voltage</span><h2 id="voltage">—</h2><small>VCAP · protected storage node</small></article>
+<article class="metric"><span>Tile activations</span><h2 id="steps">—</h2><small>Debounced mechanical switch</small></article>
+<article class="metric"><span>Stored energy</span><h2 id="energy">—</h2><small>Capacitor energy · ½CV²</small></article>
+<article class="metric"><span>Sensor status</span><h2 id="status" class="status">Waiting</h2><small id="statusHelp">No samples received</small></article>
+</section>
+<section class="middle"><article class="panel"><div class="panel-title"><div><p class="eyebrow">SIGNAL OVER TIME</p><h2>Storage voltage</h2></div><span class="legend">● VCAP / V</span></div><svg id="chart" viewBox="0 0 800 240" role="img" aria-label="Storage voltage plotted against elapsed time"></svg><p class="muted" id="chartCaption">Your latest 300 samples will appear here.</p></article>
+<article class="panel window"><p class="eyebrow">CURRENT MEASUREMENT WINDOW</p><h2>Energy in perspective</h2><dl><div><dt>Net storage change</dt><dd id="net">—</dd></div><div><dt>Mean net storage power</dt><dd id="power">—</dd></div><div><dt>Net energy / step</dt><dd id="perStep">—</dd></div><div><dt>Window duration</dt><dd id="duration">—</dd></div></dl><p id="windowNote" class="muted">Waiting for two samples.</p><p class="footnote">Signed capacitor energy change, including losses and loads. This is not gross harvested energy.</p></article></section>
+<section class="panel"><div class="panel-title"><div><p class="eyebrow">DEVICE TELEMETRY</p><h2>Behind the readings</h2></div><span id="count" class="muted">0 samples</span></div><dl class="details"><div><dt>ADC raw</dt><dd id="raw">—</dd></div><div><dt>ADC voltage</dt><dd id="adc">—</dd></div><div><dt>Capacitance</dt><dd id="cap">—</dd></div><div><dt>Device uptime</dt><dd id="uptime">—</dd></div><div><dt>Session</dt><dd id="session">—</dd></div><div><dt>Schema</dt><dd id="schema">—</dd></div></dl></section>
+<section class="panel circuit"><div class="panel-title"><div><p class="eyebrow">FROM FOOTSTEP TO READING</p><h2>The circuit, connected.</h2></div><a href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjY0NSIgdmlld0JveD0iMCAwIDEyMDAgNjQ1IiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idGl0bGUgZGVzYyI+Cjx0aXRsZSBpZD0idGl0bGUiPlN0ZXBDaGFyZ2UgcmVmZXJlbmNlIGNpcmN1aXQ8L3RpdGxlPjxkZXNjIGlkPSJkZXNjIj5QaWV6byBBQyBvdXRwdXQgY29ubmVjdHMgdG8gYSBmdWxsLXdhdmUgYnJpZGdlLiBCcmlkZ2UgcG9zaXRpdmUgc3VwcGxpZXMgVkNBUCwgc3RvcmFnZSBjYXBhY2l0b3IsIHJlcXVpcmVkIGxpbWl0ZXIsIG9wdGlvbmFsIHN3aXRjaGVkIGxvYWQgYW5kIGEgMTAwIGtpbG9vaG0gZGl2aWRlci4gQSAxIGtpbG9vaG0gcmVzaXN0b3IgY29ubmVjdHMgdGhlIGRpdmlkZXIgdG8gR1BJTzM0IHdpdGggMTAwIG5hbm9mYXJhZCBmaWx0ZXJpbmcgYW5kIHJlcXVpcmVkIEFEQyBwcm90ZWN0aW9uLiBBIG5vcm1hbGx5IG9wZW4gc3dpdGNoIGNvbm5lY3RzIEdQSU8yNyB0byBjb21tb24gZ3JvdW5kLiBVU0IgaW5kZXBlbmRlbnRseSBwb3dlcnMgdGhlIEVTUDMyLjwvZGVzYz4KPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjQ1IiByeD0iMTYiIGZpbGw9IiNmYWZjZjgiLz4KPHN0eWxlPnRleHR7Zm9udC1mYW1pbHk6U2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZjtmaWxsOiMyNDQzMzk7Zm9udC1zaXplOjE1cHh9LmxhYmVse2ZvbnQtd2VpZ2h0OjY1MDtmb250LXNpemU6MTdweH0ubm90ZXtmb250LXNpemU6MTJweDtmaWxsOiM2ODdiNmN9LndpcmV7ZmlsbDpub25lO3N0cm9rZTojNDY2ZDUyO3N0cm9rZS13aWR0aDoyLjU7c3Ryb2tlLWxpbmVqb2luOnJvdW5kfS5wYXJ0e2ZpbGw6I2YwZjVlYjtzdHJva2U6IzQ2NmQ1MjtzdHJva2Utd2lkdGg6Mn0ucmVxdWlyZWR7ZmlsbDojZmZmN2U3O3N0cm9rZTojYjg4YTM3O3N0cm9rZS13aWR0aDoyO3N0cm9rZS1kYXNoYXJyYXk6NiA0fS5kb3R7ZmlsbDojNDY2ZDUyfTwvc3R5bGU+Cjx0ZXh0IHg9IjM4IiB5PSI0MCIgY2xhc3M9ImxhYmVsIj5TVEVQQ0hBUkdFIC8gRUxFQ1RSSUNBTCBSRUZFUkVOQ0U8L3RleHQ+PHRleHQgeD0iMzgiIHk9IjY1IiBjbGFzcz0ibm90ZSI+Q2xhc3NpYyBFU1AzMi1XUk9PTS0zMiDCtyBVU0ItcG93ZXJlZCBpbnN0cnVtZW50YXRpb24gwrcgcHJvcG9zZWQgcHJvdG90eXBlPC90ZXh0Pgo8cmVjdCB4PSIzNSIgeT0iMTU1IiB3aWR0aD0iMTMwIiBoZWlnaHQ9IjExMCIgcng9IjgiIGNsYXNzPSJwYXJ0Ii8+PHRleHQgeD0iNjIiIHk9IjE5OCIgY2xhc3M9ImxhYmVsIj5QWjE8L3RleHQ+PHRleHQgeD0iNjIiIHk9IjIyMiI+UGllem8gZWxlbWVudDwvdGV4dD4KPHJlY3QgeD0iMjE1IiB5PSIxNDUiIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIiByeD0iOCIgY2xhc3M9InBhcnQiLz48dGV4dCB4PSIyNDQiIHk9IjE4MiIgY2xhc3M9ImxhYmVsIj5CUjE8L3RleHQ+PHRleHQgeD0iMjM3IiB5PSIyMDUiPkZ1bGwtd2F2ZTwvdGV4dD48dGV4dCB4PSIyNDYiIHk9IjIyNyI+YnJpZGdlPC90ZXh0Pjx0ZXh0IHg9IjIyMyIgeT0iMTg1Ij5+PC90ZXh0Pjx0ZXh0IHg9IjIyMyIgeT0iMjU5Ij5+PC90ZXh0Pjx0ZXh0IHg9IjMzNSIgeT0iMTg1Ij4rPC90ZXh0Pjx0ZXh0IHg9IjMzNSIgeT0iMjU5Ij7iiJI8L3RleHQ+CjxwYXRoIGQ9Ik0xNjUgMTgwSDIxNSBNMTY1IDI1MEgyMTUgTTM1NSAxODBINzYwIE0zNTUgMjUwSDM4MFY1NDVIMTEzNSBNNDQwIDE4MFYyOTAgTTQ0MCAzMTBWNTQ1IiBjbGFzcz0id2lyZSIvPgo8dGV4dCB4PSIzOTciIHk9IjE1MyIgY2xhc3M9ImxhYmVsIj5WQ0FQIOKJpCA1LjAgVjwvdGV4dD48Y2lyY2xlIGN4PSI0NDAiIGN5PSIxODAiIHI9IjQiIGNsYXNzPSJkb3QiLz4KPHBhdGggZD0iTTQyMiAyOTBINDU4IE00MjIgMzEwSDQ1OCIgY2xhc3M9IndpcmUiLz48dGV4dCB4PSI0MjAiIHk9IjI4MCI+KzwvdGV4dD48dGV4dCB4PSIzOTciIHk9IjM1MiI+QzEgwrcgMTAwMCDCtUY8L3RleHQ+PHRleHQgeD0iMzk5IiB5PSIzNzQiIGNsYXNzPSJub3RlIj7iiaUgMTAgViwgbWVhc3VyZWQ8L3RleHQ+CjxwYXRoIGQ9Ik01NjAgMTgwVjI3MCBNNTYwIDM3MFY1NDUiIGNsYXNzPSJ3aXJlIi8+PGNpcmNsZSBjeD0iNTYwIiBjeT0iMTgwIiByPSI0IiBjbGFzcz0iZG90Ii8+CjxyZWN0IHg9IjUwMSIgeT0iMjcwIiB3aWR0aD0iMTE4IiBoZWlnaHQ9IjEwMCIgcng9IjYiIGNsYXNzPSJyZXF1aXJlZCIvPjx0ZXh0IHg9IjUxNSIgeT0iMjk2Ij5SZXF1aXJlZDwvdGV4dD48dGV4dCB4PSI1MTYiIHk9IjMxOSI+c3RvcmFnZTwvdGV4dD48dGV4dCB4PSI1MTkiIHk9IjM0MiI+bGltaXRlcjwvdGV4dD4KPHBhdGggZD0iTTY2MCAxODBWMjUwIE02NjAgMjkwVjMzMCBNNjYwIDM5MFY1NDUgTTY2MCAyNTBMNjgwIDI3OCIgY2xhc3M9IndpcmUiLz48Y2lyY2xlIGN4PSI2NjAiIGN5PSIxODAiIHI9IjQiIGNsYXNzPSJkb3QiLz4KPHJlY3QgeD0iNjQ5IiB5PSIzMzAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MCIgY2xhc3M9InBhcnQiLz48dGV4dCB4PSI2MzEiIHk9IjQxOCIgY2xhc3M9Im5vdGUiPk9wdGlvbmFsPC90ZXh0Pjx0ZXh0IHg9IjYzMiIgeT0iNDM3IiBjbGFzcz0ibm90ZSI+dGVzdCBsb2FkPC90ZXh0Pjx0ZXh0IHg9IjYzNSIgeT0iMjM2IiBjbGFzcz0ibm90ZSI+U1cyPC90ZXh0Pgo8cGF0aCBkPSJNNzYwIDE4MFYyMzAgTTc2MCAyOTBWMzUwSDg2NSBNNzYwIDM1MFY0MTAgTTc2MCA0NzBWNTQ1IE05MTUgMzUwSDEwMjAgTTk2MCAzNTBWNDM1IE05NjAgNDU1VjU0NSIgY2xhc3M9IndpcmUiLz4KPHJlY3QgeD0iNzQ5IiB5PSIyMzAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MCIgY2xhc3M9InBhcnQiLz48dGV4dCB4PSI3OTAiIHk9IjI1MyI+UjEgwrcgMTAwIGvOqTwvdGV4dD48dGV4dCB4PSI3OTAiIHk9IjI3NSIgY2xhc3M9Im5vdGUiPjElIC8gbWVhc3VyZWQ8L3RleHQ+CjxyZWN0IHg9Ijc0OSIgeT0iNDEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNjAiIGNsYXNzPSJwYXJ0Ii8+PHRleHQgeD0iNzgwIiB5PSI0NTUiPlIyIMK3IDEwMCBrzqk8L3RleHQ+PHRleHQgeD0iNzgwIiB5PSI0NzciIGNsYXNzPSJub3RlIj4xJSAvIG1lYXN1cmVkPC90ZXh0Pgo8cmVjdCB4PSI4NjUiIHk9IjMzOSIgd2lkdGg9IjUwIiBoZWlnaHQ9IjIyIiBjbGFzcz0icGFydCIvPjx0ZXh0IHg9Ijg1MiIgeT0iMzIyIj5SMyDCtyAxIGvOqTwvdGV4dD48Y2lyY2xlIGN4PSI3NjAiIGN5PSIzNTAiIHI9IjQiIGNsYXNzPSJkb3QiLz48Y2lyY2xlIGN4PSI5NjAiIGN5PSIzNTAiIHI9IjQiIGNsYXNzPSJkb3QiLz4KPHBhdGggZD0iTTk0MyA0MzVIOTc3IE05NDMgNDU1SDk3NyIgY2xhc3M9IndpcmUiLz48dGV4dCB4PSI5MjMiIHk9IjQ4OCIgY2xhc3M9Im5vdGUiPkMyIMK3IDEwMCBuRjwvdGV4dD4KPHJlY3QgeD0iMTAyMCIgeT0iMjM1IiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE3MCIgcng9IjEwIiBjbGFzcz0icGFydCIvPjx0ZXh0IHg9IjEwNTQiIHk9IjI3MCIgY2xhc3M9ImxhYmVsIj5FU1AzMjwvdGV4dD48dGV4dCB4PSIxMDMyIiB5PSIyOTciIGNsYXNzPSJub3RlIj5XUk9PTS0zMiBkZXYgYm9hcmQ8L3RleHQ+PHRleHQgeD0iMTAzMCIgeT0iMzU1Ij5HUElPMzQgLyBBREMxPC90ZXh0Pjx0ZXh0IHg9IjEwMzAiIHk9IjM4NSI+R1BJTzI3PC90ZXh0Pgo8cGF0aCBkPSJNMTA5NSAxMzBWMjM1IiBjbGFzcz0id2lyZSIvPjx0ZXh0IHg9IjEwMzAiIHk9IjEwNSIgY2xhc3M9ImxhYmVsIj5VU0IgZnJvbSBQQzwvdGV4dD48dGV4dCB4PSIxMDA1IiB5PSIxMjUiIGNsYXNzPSJub3RlIj5Qb3dlciArIDExNTIwMCBiYXVkIEpTT048L3RleHQ+CjxwYXRoIGQ9Ik0xMTM1IDQwNVY1NDUgTTExNzAgMzgwSDExODVWNTc1SDkzNSBNODkwIDU3NUg4NTBWNTQ1IE04OTAgNTc1TDkyOCA1NTUiIGNsYXNzPSJ3aXJlIi8+PHRleHQgeD0iOTI1IiB5PSI2MDUiIGNsYXNzPSJub3RlIj5TVzEgwrcgbm9ybWFsbHkgb3BlbjwvdGV4dD48dGV4dCB4PSI5MjUiIHk9IjYyNCIgY2xhc3M9Im5vdGUiPlRpbGUgc3dpdGNoOyBpbnRlcm5hbCBwdWxsLXVwPC90ZXh0Pgo8cGF0aCBkPSJNMTAwMCAzNTBWNDE0IE0xMDAwIDUxMlY1NDUiIGNsYXNzPSJ3aXJlIi8+PHJlY3QgeD0iMTAwOCIgeT0iNDI1IiB3aWR0aD0iMTAyIiBoZWlnaHQ9Ijg1IiByeD0iNSIgY2xhc3M9InJlcXVpcmVkIi8+PHBhdGggZD0iTTEwMDAgNDE0SDEwNThWNDI1IE0xMDU4IDUxMFY1MjBIMTAwMCIgY2xhc3M9IndpcmUiLz4KPHRleHQgeD0iMTAxNyIgeT0iNDQ3IiBjbGFzcz0ibm90ZSI+UmVxdWlyZWQgQURDPC90ZXh0Pjx0ZXh0IHg9IjEwMTciIHk9IjQ2NyIgY2xhc3M9Im5vdGUiPnByb3RlY3Rpb248L3RleHQ+PHRleHQgeD0iMTAxNyIgeT0iNDg3IiBjbGFzcz0ibm90ZSI+dG8gcmVmZXJlbmNlKHMpPC90ZXh0Pgo8cGF0aCBkPSJNNTYwIDU0NVY1NzAgTTU0NCA1NzBINTc2IE01NTAgNTc4SDU3MCBNNTU2IDU4Nkg1NjQiIGNsYXNzPSJ3aXJlIi8+PHRleHQgeD0iMzkwIiB5PSI1NzUiIGNsYXNzPSJsYWJlbCI+Q29tbW9uIEdORDwvdGV4dD4KPC9zdmc+Cgo=" target="_blank" rel="noopener">Open diagram ↗</a></div><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjY0NSIgdmlld0JveD0iMCAwIDEyMDAgNjQ1IiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idGl0bGUgZGVzYyI+Cjx0aXRsZSBpZD0idGl0bGUiPlN0ZXBDaGFyZ2UgcmVmZXJlbmNlIGNpcmN1aXQ8L3RpdGxlPjxkZXNjIGlkPSJkZXNjIj5QaWV6byBBQyBvdXRwdXQgY29ubmVjdHMgdG8gYSBmdWxsLXdhdmUgYnJpZGdlLiBCcmlkZ2UgcG9zaXRpdmUgc3VwcGxpZXMgVkNBUCwgc3RvcmFnZSBjYXBhY2l0b3IsIHJlcXVpcmVkIGxpbWl0ZXIsIG9wdGlvbmFsIHN3aXRjaGVkIGxvYWQgYW5kIGEgMTAwIGtpbG9vaG0gZGl2aWRlci4gQSAxIGtpbG9vaG0gcmVzaXN0b3IgY29ubmVjdHMgdGhlIGRpdmlkZXIgdG8gR1BJTzM0IHdpdGggMTAwIG5hbm9mYXJhZCBmaWx0ZXJpbmcgYW5kIHJlcXVpcmVkIEFEQyBwcm90ZWN0aW9uLiBBIG5vcm1hbGx5IG9wZW4gc3dpdGNoIGNvbm5lY3RzIEdQSU8yNyB0byBjb21tb24gZ3JvdW5kLiBVU0IgaW5kZXBlbmRlbnRseSBwb3dlcnMgdGhlIEVTUDMyLjwvZGVzYz4KPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjQ1IiByeD0iMTYiIGZpbGw9IiNmYWZjZjgiLz4KPHN0eWxlPnRleHR7Zm9udC1mYW1pbHk6U2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZjtmaWxsOiMyNDQzMzk7Zm9udC1zaXplOjE1cHh9LmxhYmVse2ZvbnQtd2VpZ2h0OjY1MDtmb250LXNpemU6MTdweH0ubm90ZXtmb250LXNpemU6MTJweDtmaWxsOiM2ODdiNmN9LndpcmV7ZmlsbDpub25lO3N0cm9rZTojNDY2ZDUyO3N0cm9rZS13aWR0aDoyLjU7c3Ryb2tlLWxpbmVqb2luOnJvdW5kfS5wYXJ0e2ZpbGw6I2YwZjVlYjtzdHJva2U6IzQ2NmQ1MjtzdHJva2Utd2lkdGg6Mn0ucmVxdWlyZWR7ZmlsbDojZmZmN2U3O3N0cm9rZTojYjg4YTM3O3N0cm9rZS13aWR0aDoyO3N0cm9rZS1kYXNoYXJyYXk6NiA0fS5kb3R7ZmlsbDojNDY2ZDUyfTwvc3R5bGU+Cjx0ZXh0IHg9IjM4IiB5PSI0MCIgY2xhc3M9ImxhYmVsIj5TVEVQQ0hBUkdFIC8gRUxFQ1RSSUNBTCBSRUZFUkVOQ0U8L3RleHQ+PHRleHQgeD0iMzgiIHk9IjY1IiBjbGFzcz0ibm90ZSI+Q2xhc3NpYyBFU1AzMi1XUk9PTS0zMiDCtyBVU0ItcG93ZXJlZCBpbnN0cnVtZW50YXRpb24gwrcgcHJvcG9zZWQgcHJvdG90eXBlPC90ZXh0Pgo8cmVjdCB4PSIzNSIgeT0iMTU1IiB3aWR0aD0iMTMwIiBoZWlnaHQ9IjExMCIgcng9IjgiIGNsYXNzPSJwYXJ0Ii8+PHRleHQgeD0iNjIiIHk9IjE5OCIgY2xhc3M9ImxhYmVsIj5QWjE8L3RleHQ+PHRleHQgeD0iNjIiIHk9IjIyMiI+UGllem8gZWxlbWVudDwvdGV4dD4KPHJlY3QgeD0iMjE1IiB5PSIxNDUiIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIiByeD0iOCIgY2xhc3M9InBhcnQiLz48dGV4dCB4PSIyNDQiIHk9IjE4MiIgY2xhc3M9ImxhYmVsIj5CUjE8L3RleHQ+PHRleHQgeD0iMjM3IiB5PSIyMDUiPkZ1bGwtd2F2ZTwvdGV4dD48dGV4dCB4PSIyNDYiIHk9IjIyNyI+YnJpZGdlPC90ZXh0Pjx0ZXh0IHg9IjIyMyIgeT0iMTg1Ij5+PC90ZXh0Pjx0ZXh0IHg9IjIyMyIgeT0iMjU5Ij5+PC90ZXh0Pjx0ZXh0IHg9IjMzNSIgeT0iMTg1Ij4rPC90ZXh0Pjx0ZXh0IHg9IjMzNSIgeT0iMjU5Ij7iiJI8L3RleHQ+CjxwYXRoIGQ9Ik0xNjUgMTgwSDIxNSBNMTY1IDI1MEgyMTUgTTM1NSAxODBINzYwIE0zNTUgMjUwSDM4MFY1NDVIMTEzNSBNNDQwIDE4MFYyOTAgTTQ0MCAzMTBWNTQ1IiBjbGFzcz0id2lyZSIvPgo8dGV4dCB4PSIzOTciIHk9IjE1MyIgY2xhc3M9ImxhYmVsIj5WQ0FQIOKJpCA1LjAgVjwvdGV4dD48Y2lyY2xlIGN4PSI0NDAiIGN5PSIxODAiIHI9IjQiIGNsYXNzPSJkb3QiLz4KPHBhdGggZD0iTTQyMiAyOTBINDU4IE00MjIgMzEwSDQ1OCIgY2xhc3M9IndpcmUiLz48dGV4dCB4PSI0MjAiIHk9IjI4MCI+KzwvdGV4dD48dGV4dCB4PSIzOTciIHk9IjM1MiI+QzEgwrcgMTAwMCDCtUY8L3RleHQ+PHRleHQgeD0iMzk5IiB5PSIzNzQiIGNsYXNzPSJub3RlIj7iiaUgMTAgViwgbWVhc3VyZWQ8L3RleHQ+CjxwYXRoIGQ9Ik01NjAgMTgwVjI3MCBNNTYwIDM3MFY1NDUiIGNsYXNzPSJ3aXJlIi8+PGNpcmNsZSBjeD0iNTYwIiBjeT0iMTgwIiByPSI0IiBjbGFzcz0iZG90Ii8+CjxyZWN0IHg9IjUwMSIgeT0iMjcwIiB3aWR0aD0iMTE4IiBoZWlnaHQ9IjEwMCIgcng9IjYiIGNsYXNzPSJyZXF1aXJlZCIvPjx0ZXh0IHg9IjUxNSIgeT0iMjk2Ij5SZXF1aXJlZDwvdGV4dD48dGV4dCB4PSI1MTYiIHk9IjMxOSI+c3RvcmFnZTwvdGV4dD48dGV4dCB4PSI1MTkiIHk9IjM0MiI+bGltaXRlcjwvdGV4dD4KPHBhdGggZD0iTTY2MCAxODBWMjUwIE02NjAgMjkwVjMzMCBNNjYwIDM5MFY1NDUgTTY2MCAyNTBMNjgwIDI3OCIgY2xhc3M9IndpcmUiLz48Y2lyY2xlIGN4PSI2NjAiIGN5PSIxODAiIHI9IjQiIGNsYXNzPSJkb3QiLz4KPHJlY3QgeD0iNjQ5IiB5PSIzMzAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MCIgY2xhc3M9InBhcnQiLz48dGV4dCB4PSI2MzEiIHk9IjQxOCIgY2xhc3M9Im5vdGUiPk9wdGlvbmFsPC90ZXh0Pjx0ZXh0IHg9IjYzMiIgeT0iNDM3IiBjbGFzcz0ibm90ZSI+dGVzdCBsb2FkPC90ZXh0Pjx0ZXh0IHg9IjYzNSIgeT0iMjM2IiBjbGFzcz0ibm90ZSI+U1cyPC90ZXh0Pgo8cGF0aCBkPSJNNzYwIDE4MFYyMzAgTTc2MCAyOTBWMzUwSDg2NSBNNzYwIDM1MFY0MTAgTTc2MCA0NzBWNTQ1IE05MTUgMzUwSDEwMjAgTTk2MCAzNTBWNDM1IE05NjAgNDU1VjU0NSIgY2xhc3M9IndpcmUiLz4KPHJlY3QgeD0iNzQ5IiB5PSIyMzAiIHdpZHRoPSIyMiIgaGVpZ2h0PSI2MCIgY2xhc3M9InBhcnQiLz48dGV4dCB4PSI3OTAiIHk9IjI1MyI+UjEgwrcgMTAwIGvOqTwvdGV4dD48dGV4dCB4PSI3OTAiIHk9IjI3NSIgY2xhc3M9Im5vdGUiPjElIC8gbWVhc3VyZWQ8L3RleHQ+CjxyZWN0IHg9Ijc0OSIgeT0iNDEwIiB3aWR0aD0iMjIiIGhlaWdodD0iNjAiIGNsYXNzPSJwYXJ0Ii8+PHRleHQgeD0iNzgwIiB5PSI0NTUiPlIyIMK3IDEwMCBrzqk8L3RleHQ+PHRleHQgeD0iNzgwIiB5PSI0NzciIGNsYXNzPSJub3RlIj4xJSAvIG1lYXN1cmVkPC90ZXh0Pgo8cmVjdCB4PSI4NjUiIHk9IjMzOSIgd2lkdGg9IjUwIiBoZWlnaHQ9IjIyIiBjbGFzcz0icGFydCIvPjx0ZXh0IHg9Ijg1MiIgeT0iMzIyIj5SMyDCtyAxIGvOqTwvdGV4dD48Y2lyY2xlIGN4PSI3NjAiIGN5PSIzNTAiIHI9IjQiIGNsYXNzPSJkb3QiLz48Y2lyY2xlIGN4PSI5NjAiIGN5PSIzNTAiIHI9IjQiIGNsYXNzPSJkb3QiLz4KPHBhdGggZD0iTTk0MyA0MzVIOTc3IE05NDMgNDU1SDk3NyIgY2xhc3M9IndpcmUiLz48dGV4dCB4PSI5MjMiIHk9IjQ4OCIgY2xhc3M9Im5vdGUiPkMyIMK3IDEwMCBuRjwvdGV4dD4KPHJlY3QgeD0iMTAyMCIgeT0iMjM1IiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE3MCIgcng9IjEwIiBjbGFzcz0icGFydCIvPjx0ZXh0IHg9IjEwNTQiIHk9IjI3MCIgY2xhc3M9ImxhYmVsIj5FU1AzMjwvdGV4dD48dGV4dCB4PSIxMDMyIiB5PSIyOTciIGNsYXNzPSJub3RlIj5XUk9PTS0zMiBkZXYgYm9hcmQ8L3RleHQ+PHRleHQgeD0iMTAzMCIgeT0iMzU1Ij5HUElPMzQgLyBBREMxPC90ZXh0Pjx0ZXh0IHg9IjEwMzAiIHk9IjM4NSI+R1BJTzI3PC90ZXh0Pgo8cGF0aCBkPSJNMTA5NSAxMzBWMjM1IiBjbGFzcz0id2lyZSIvPjx0ZXh0IHg9IjEwMzAiIHk9IjEwNSIgY2xhc3M9ImxhYmVsIj5VU0IgZnJvbSBQQzwvdGV4dD48dGV4dCB4PSIxMDA1IiB5PSIxMjUiIGNsYXNzPSJub3RlIj5Qb3dlciArIDExNTIwMCBiYXVkIEpTT048L3RleHQ+CjxwYXRoIGQ9Ik0xMTM1IDQwNVY1NDUgTTExNzAgMzgwSDExODVWNTc1SDkzNSBNODkwIDU3NUg4NTBWNTQ1IE04OTAgNTc1TDkyOCA1NTUiIGNsYXNzPSJ3aXJlIi8+PHRleHQgeD0iOTI1IiB5PSI2MDUiIGNsYXNzPSJub3RlIj5TVzEgwrcgbm9ybWFsbHkgb3BlbjwvdGV4dD48dGV4dCB4PSI5MjUiIHk9IjYyNCIgY2xhc3M9Im5vdGUiPlRpbGUgc3dpdGNoOyBpbnRlcm5hbCBwdWxsLXVwPC90ZXh0Pgo8cGF0aCBkPSJNMTAwMCAzNTBWNDE0IE0xMDAwIDUxMlY1NDUiIGNsYXNzPSJ3aXJlIi8+PHJlY3QgeD0iMTAwOCIgeT0iNDI1IiB3aWR0aD0iMTAyIiBoZWlnaHQ9Ijg1IiByeD0iNSIgY2xhc3M9InJlcXVpcmVkIi8+PHBhdGggZD0iTTEwMDAgNDE0SDEwNThWNDI1IE0xMDU4IDUxMFY1MjBIMTAwMCIgY2xhc3M9IndpcmUiLz4KPHRleHQgeD0iMTAxNyIgeT0iNDQ3IiBjbGFzcz0ibm90ZSI+UmVxdWlyZWQgQURDPC90ZXh0Pjx0ZXh0IHg9IjEwMTciIHk9IjQ2NyIgY2xhc3M9Im5vdGUiPnByb3RlY3Rpb248L3RleHQ+PHRleHQgeD0iMTAxNyIgeT0iNDg3IiBjbGFzcz0ibm90ZSI+dG8gcmVmZXJlbmNlKHMpPC90ZXh0Pgo8cGF0aCBkPSJNNTYwIDU0NVY1NzAgTTU0NCA1NzBINTc2IE01NTAgNTc4SDU3MCBNNTU2IDU4Nkg1NjQiIGNsYXNzPSJ3aXJlIi8+PHRleHQgeD0iMzkwIiB5PSI1NzUiIGNsYXNzPSJsYWJlbCI+Q29tbW9uIEdORDwvdGV4dD4KPC9zdmc+Cgo=" alt="StepCharge reference circuit: piezo bridge, protected capacitor storage, resistor divider to GPIO34, independent switch to GPIO27, and USB-powered ESP32."></section>
+<footer>STEPCHARGE / BENCH PROTOTYPE<span>USB-powered instrumentation · No battery charging control</span></footer>
+</main><script>// UI demonstration only; these are not measurements or predicted performance.
+function demoReadings() {
+  return Array.from({length:61}, (_,i) => {
+    const steps = Math.floor(i/2);
+    const voltage = Number((1.2 + steps*0.041 - i*0.0005).toFixed(5));
+    return {schema:1,session:1,uptime_ms:(i+1)*1000,steps,
+      adc_raw:Math.round(voltage/2/3.3*4095),adc_mv:voltage*500,
+      storage_v:voltage,capacitance_f:0.001,status:'ok',stored_energy_j:0.0005*voltage*voltage};
+  });
+}
+
+function validate(r) {
+  if (!r || r.schema !== 1) throw new Error('Expected StepCharge schema 1');
+  for (const k of ['session', 'uptime_ms', 'steps', 'capacitance_f', 'storage_v']) {
+    if (typeof r[k] !== 'number' || !Number.isFinite(r[k])) throw new Error(`Invalid ${k}`);
+  }
+  for (const k of ['session', 'uptime_ms', 'steps']) {
+    if (!Number.isSafeInteger(r[k]) || r[k] < 0) throw new Error(`Invalid ${k}`);
+  }
+  if (!['ok', 'below_range', 'overrange', 'configure_capacitance', 'starting'].includes(r.status)) throw new Error('Unknown sensor status');
+  for (const k of ['adc_raw', 'adc_mv', 'stored_energy_j']) {
+    if (r[k] != null && (typeof r[k] !== 'number' || !Number.isFinite(r[k]))) throw new Error(`Invalid ${k}`);
+  }
+  return r;
+}
+
+function summarize(rows) {
+  if (rows.length < 2) return {error: 'Waiting for two samples'};
+  const first = rows[0], last = rows.at(-1);
+  for (let i = 0; i < rows.length; i++) {
+    const r = validate(rows[i]), p = rows[i - 1];
+    if (r.status !== 'ok' || r.capacitance_f <= 0 || r.storage_v < 0) return {error: 'Window contains invalid or unconfigured readings. Start a new window after resolving them.'};
+    if (r.capacitance_f !== first.capacitance_f) return {error: 'Capacitance changed. Start a new window.'};
+    if (p && (r.session !== p.session || r.uptime_ms <= p.uptime_ms || r.steps < p.steps)) return {error: 'Session reset or clock discontinuity. Start a new window.'};
+  }
+  const duration = (last.uptime_ms - first.uptime_ms) / 1000;
+  const energy = 0.5 * first.capacitance_f * (last.storage_v ** 2 - first.storage_v ** 2);
+  const steps = last.steps - first.steps;
+  return {duration, energy, power: energy / duration, perStep: steps ? energy / steps : null, steps};
+}
+
+const $ = id => document.getElementById(id);
+let rows = [], port, reader, reading, timer, lastReceived = 0, mode = 'Not connected', skipped = 0, synthetic = false;
+const fmt = (v, unit = '', digits = 3) => v == null ? '—' : `${v.toLocaleString(undefined, {maximumFractionDigits: digits})} ${unit}`;
+const set = (id, value) => $(id).textContent = value;
+const tell = text => set('notice', text);
+function draw() {
+  const data = rows.slice(-300), svg = $('chart');
+  svg.replaceChildren();
+  const add = (name, attrs, content) => {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', name);
+    Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v));
+    if (content != null) el.textContent = content;
+    svg.append(el);
+  };
+  const max = Math.max(1, ...data.map(r => r.storage_v)), min = Math.min(0, ...data.map(r => r.storage_v));
+  for (let i = 0; i < 5; i++) {
+    const y = 20 + i * 45;
+    add('line', {x1:48,y1:y,x2:780,y2:y,stroke:'#e0e7dc','stroke-dasharray':'4 5'});
+    add('text', {x:0,y:y+4,fill:'#7b897b','font-size':11}, (max - i * (max-min)/4).toFixed(2));
+  }
+  if (!data.length) return;
+  // Index spacing remains readable when a capture includes a reboot; analysis flags the discontinuity.
+  const points = data.map((r,i) => `${48+i*732/Math.max(1,data.length-1)},${20+180*(max-r.storage_v)/(max-min)}`).join(' ');
+  add('polyline', {points,fill:'none',stroke:'#5b853d','stroke-width':3,'stroke-linejoin':'round'});
+  add('text',{x:48,y:230,fill:'#7b897b','font-size':11},fmt(data[0].uptime_ms/1000,'s uptime',1));
+  add('text',{x:780,y:230,'text-anchor':'end',fill:'#7b897b','font-size':11},fmt(data.at(-1).uptime_ms/1000,'s uptime',1));
+  set('chartCaption', `${data.length} latest samples · evenly spaced by sample · values in volts`);
+}
+function render() {
+  const r = rows.at(-1);
+  set('source',synthetic ? '' : mode); $('source').hidden = synthetic; set('count',`${rows.length.toLocaleString()} samples`);
+  $('export').disabled = !rows.length;
+  set('voltage',fmt(r?.storage_v,'V')); set('steps',fmt(r?.steps,'',0));
+  set('energy',fmt(r?.status === 'ok' ? r.stored_energy_j * 1000 : null,'mJ'));
+  // An absent energy field must remain unavailable, never become zero.
+  if (r?.stored_energy_j == null) set('energy','—');
+  set('status',r ? r.status.replaceAll('_',' ') : 'Waiting');
+  set('statusHelp',({ok:'Within configured measurement range',configure_capacitance:'Set measured capacitance in config.h',overrange:'Input exceeds measurement range',below_range:'Below calibrated measurement range',starting:'Device initializing'})[r?.status] || 'No samples received');
+  set('raw',fmt(r?.adc_raw,'counts',0)); set('adc',fmt(r?.adc_mv,'mV',2));
+  set('cap',fmt(r ? r.capacitance_f*1e6 : null,'µF')); set('uptime',fmt(r ? r.uptime_ms/1000 : null,'s',1));
+  set('session',fmt(r?.session)); set('schema',fmt(r?.schema));
+  const s = summarize(rows);
+  set('net',fmt(s.energy == null ? null : s.energy*1000,'mJ'));
+  set('power',fmt(s.power == null ? null : s.power*1e6,'µW'));
+  set('perStep',fmt(s.perStep == null ? null : s.perStep*1e6,'µJ/step'));
+  set('duration',fmt(s.duration,'s',1)); set('windowNote',s.error || `${s.steps} counted steps in this window.`);
+  draw();
+}
+function append(r) {
+  validate(r);
+  if (rows.length >= 20000) throw new Error('20,000-sample limit reached. Export readings and start a new window.');
+  rows.push(r); lastReceived = Date.now(); render();
+}
+function controls(active) {
+  for (const id of ['connect','demo','import']) $(id).disabled = active;
+  $('disconnect').disabled = !active;
+}
+async function stop() {
+  clearInterval(timer); timer = null;
+  if (reader) await reader.cancel().catch(()=>{});
+  if (reading) await reading;
+  if (port) await port.close().catch(()=>{});
+  port = null; mode = rows.length ? 'Disconnected · saved readings' : 'Not connected';
+  controls(false); render();
+}
+$('disconnect').onclick = async () => {await stop(); tell('Disconnected. Readings remain available to export.');};
+$('new').onclick = () => {rows = []; skipped = 0; render(); tell('New measurement window started. The device step counter is unchanged.');};
+$('demo').onclick = () => {
+  rows = []; synthetic = true; mode = 'DEMO · synthetic readings'; controls(true); let tick = 0;
+  tell('');
+  const sample = () => { const v = 1 + Math.min(tick,120)*0.025;
+    append({schema:1,session:1,uptime_ms:(tick+1)*1000,steps:tick,adc_raw:Math.round(v/2/3.3*4095),adc_mv:v*500,storage_v:v,capacitance_f:0.001,status:'ok',stored_energy_j:0.0005*v*v}); tick++;
+  };
+  sample(); timer = setInterval(() => {try {sample();} catch(e) {clearInterval(timer);tell(e.message);}},1000);
+};
+$('connect').onclick = async () => {
+  if (!navigator.serial) {tell('Live USB requires desktop Chrome or Edge on localhost or HTTPS. You can import a capture here instead.');return;}
+  controls(true);
+  try {
+    port = await navigator.serial.requestPort(); await port.open({baudRate:115200});
+    rows = []; synthetic = false; skipped = 0; mode = 'LIVE · USB serial'; lastReceived = Date.now(); render();
+    tell('Connected at 115200 baud. Opening USB may reboot the ESP32.');
+    reading = (async () => {
+      reader = port.readable.getReader(); const decoder = new TextDecoder(); let buffer = '';
+      try {
+        while (true) {
+          const {value,done} = await reader.read(); if (done) break;
+          buffer += decoder.decode(value,{stream:true});
+          const lines = buffer.split('\n'); buffer = lines.pop();
+          if (buffer.length > 65536) {buffer = ''; skipped++; tell('Oversized serial line skipped.');}
+          for (const line of lines) {
+            if (!line.trim()) continue;
+            let r;
+            try {r = validate(JSON.parse(line));} catch {skipped++;tell(`${skipped} non-telemetry or malformed lines skipped.`);continue;}
+            append(r);
+          }
+        }
+      } catch(e) {tell(`Serial stopped: ${e.message}`);}
+      finally {reader.releaseLock();reader = null;}
+    })();
+    await reading;
+    if (port) await port.close().catch(()=>{});
+    port = null; controls(false); mode = 'Disconnected · saved readings'; render();
+  } catch(e) {await stop();tell(`Connection unavailable: ${e.message}`);}
+};
+$('import').onchange = async event => {
+  const file = event.target.files[0]; if (!file) return;
+  try {
+    if (file.size > 12*1024*1024) throw new Error('Choose a capture under 12 MB.');
+    const incoming = (await file.text()).split(/\r?\n/).filter(l=>l.trim()).map((line,i)=>{
+      try {return validate(JSON.parse(line));} catch(e) {throw new Error(`Line ${i+1}: ${e.message}`);}
+    });
+    if (!incoming.length || incoming.length > 20000) throw new Error('Capture must contain 1–20,000 samples.');
+    rows = incoming; synthetic = false; mode = 'IMPORTED · saved capture'; render(); tell(`Loaded ${file.name}. These are saved readings, not a live connection.`);
+  } catch(e) {tell(`Import failed: ${e.message}`);} finally {event.target.value = '';}
+};
+$('export').onclick = () => {
+  const url = URL.createObjectURL(new Blob([rows.map(r=>JSON.stringify(r)).join('\n')+'\n'],{type:'application/x-ndjson'}));
+  const a = document.createElement('a'); a.href=url; a.download=`stepcharge-${synthetic?'synthetic':'capture'}-${Date.now()}.jsonl`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+setInterval(()=>{if(mode.startsWith('LIVE')) set('source',Date.now()-lastReceived>4000?'LIVE · waiting for data (stale)':mode);},1000);
+rows = demoReadings();
+synthetic = true;
+mode = 'DEMO · synthetic sample capture';
+tell('');
+render();
+
+</script></body></html>
+
+
+

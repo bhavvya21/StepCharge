@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="645" viewBox="0 0 1200 645" role="img" aria-labelledby="title desc">
+<title id="title">StepCharge reference circuit</title><desc id="desc">Piezo AC output connects to a full-wave bridge. Bridge positive supplies VCAP, storage capacitor, required limiter, optional switched load and a 100 kiloohm divider. A 1 kiloohm resistor connects the divider to GPIO34 with 100 nanofarad filtering and required ADC protection. A normally open switch connects GPIO27 to common ground. USB independently powers the ESP32.</desc>
+<rect width="1200" height="645" rx="16" fill="#fafcf8"/>
+<style>text{font-family:Segoe UI,Arial,sans-serif;fill:#244339;font-size:15px}.label{font-weight:650;font-size:17px}.note{font-size:12px;fill:#687b6c}.wire{fill:none;stroke:#466d52;stroke-width:2.5;stroke-linejoin:round}.part{fill:#f0f5eb;stroke:#466d52;stroke-width:2}.required{fill:#fff7e7;stroke:#b88a37;stroke-width:2;stroke-dasharray:6 4}.dot{fill:#466d52}</style>
+<text x="38" y="40" class="label">STEPCHARGE / ELECTRICAL REFERENCE</text><text x="38" y="65" class="note">Classic ESP32-WROOM-32 · USB-powered instrumentation · proposed prototype</text>
+<rect x="35" y="155" width="130" height="110" rx="8" class="part"/><text x="62" y="198" class="label">PZ1</text><text x="62" y="222">Piezo element</text>
+<rect x="215" y="145" width="140" height="140" rx="8" class="part"/><text x="244" y="182" class="label">BR1</text><text x="237" y="205">Full-wave</text><text x="246" y="227">bridge</text><text x="223" y="185">~</text><text x="223" y="259">~</text><text x="335" y="185">+</text><text x="335" y="259">−</text>
+<path d="M165 180H215 M165 250H215 M355 180H760 M355 250H380V545H1135 M440 180V290 M440 310V545" class="wire"/>
+<text x="397" y="153" class="label">VCAP ≤ 5.0 V</text><circle cx="440" cy="180" r="4" class="dot"/>
+<path d="M422 290H458 M422 310H458" class="wire"/><text x="420" y="280">+</text><text x="397" y="352">C1 · 1000 µF</text><text x="399" y="374" class="note">≥ 10 V, measured</text>
+<path d="M560 180V270 M560 370V545" class="wire"/><circle cx="560" cy="180" r="4" class="dot"/>
+<rect x="501" y="270" width="118" height="100" rx="6" class="required"/><text x="515" y="296">Required</text><text x="516" y="319">storage</text><text x="519" y="342">limiter</text>
+<path d="M660 180V250 M660 290V330 M660 390V545 M660 250L680 278" class="wire"/><circle cx="660" cy="180" r="4" class="dot"/>
+<rect x="649" y="330" width="22" height="60" class="part"/><text x="631" y="418" class="note">Optional</text><text x="632" y="437" class="note">test load</text><text x="635" y="236" class="note">SW2</text>
+<path d="M760 180V230 M760 290V350H865 M760 350V410 M760 470V545 M915 350H1020 M960 350V435 M960 455V545" class="wire"/>
+<rect x="749" y="230" width="22" height="60" class="part"/><text x="790" y="253">R1 · 100 kΩ</text><text x="790" y="275" class="note">1% / measured</text>
+<rect x="749" y="410" width="22" height="60" class="part"/><text x="780" y="455">R2 · 100 kΩ</text><text x="780" y="477" class="note">1% / measured</text>
+<rect x="865" y="339" width="50" height="22" class="part"/><text x="852" y="322">R3 · 1 kΩ</text><circle cx="760" cy="350" r="4" class="dot"/><circle cx="960" cy="350" r="4" class="dot"/>
+<path d="M943 435H977 M943 455H977" class="wire"/><text x="923" y="488" class="note">C2 · 100 nF</text>
+<rect x="1020" y="235" width="150" height="170" rx="10" class="part"/><text x="1054" y="270" class="label">ESP32</text><text x="1032" y="297" class="note">WROOM-32 dev board</text><text x="1030" y="355">GPIO34 / ADC1</text><text x="1030" y="385">GPIO27</text>
+<path d="M1095 130V235" class="wire"/><text x="1030" y="105" class="label">USB from PC</text><text x="1005" y="125" class="note">Power + 115200 baud JSON</text>
+<path d="M1135 405V545 M1170 380H1185V575H935 M890 575H850V545 M890 575L928 555" class="wire"/><text x="925" y="605" class="note">SW1 · normally open</text><text x="925" y="624" class="note">Tile switch; internal pull-up</text>
+<path d="M1000 350V414 M1000 512V545" class="wire"/><rect x="1008" y="425" width="102" height="85" rx="5" class="required"/><path d="M1000 414H1058V425 M1058 510V520H1000" class="wire"/>
+<text x="1017" y="447" class="note">Required ADC</text><text x="1017" y="467" class="note">protection</text><text x="1017" y="487" class="note">to reference(s)</text>
+<path d="M560 545V570 M544 570H576 M550 578H570 M556 586H564" class="wire"/><text x="390" y="575" class="label">Common GND</text>
+</svg>
+

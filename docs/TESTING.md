@@ -5,9 +5,15 @@
 ```sh
 python -m unittest discover -s tests -v
 python tools/analyze.py examples/synthetic_trial.jsonl
+node app/build-standalone.mjs
+node --test tests/telemetry.test.mjs tests/standalone.test.mjs
 ```
 
 The synthetic example deliberately represents a 1 mF capacitor increasing from 1 V to 2 V over 10 seconds and ten steps. It demonstrates the calculation only.
+
+The dashboard's separate `examples/demo_readings.jsonl` contains 61 generated samples spanning 60 seconds: 1.2 V to 2.4 V, 30 activations, 2.16 mJ net storage increase, 36 µW mean net storage power, and 72 µJ per activation. It is UI/test data only. JavaScript tests cover calculation edge cases and execute the standalone script with a minimal DOM stub; they do not replace browser layout or USB testing.
+
+For a manual UI check, open `app/StepCharge.html`, check that only **Export readings** appears in the toolbar, inspect the chart and circuit at desktop and mobile widths, export the readings, and analyze the downloaded JSONL. Confirm the app has no hardware-guide accordion or circuit footnotes. User-supplied screenshots document the desktop appearance; mobile and live-device checks remain outstanding.
 
 ## Voltage calibration
 
